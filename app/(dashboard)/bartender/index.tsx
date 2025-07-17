@@ -119,6 +119,9 @@ export default function BartenderDashboard() {
           </View>
         </View>
       </ScrollView>
+    )
+    )
+    }
     </View>
   );
 }
