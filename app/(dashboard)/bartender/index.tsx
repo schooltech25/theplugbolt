@@ -16,6 +16,8 @@ const quickStats = [
 ];
 
 export default function BartenderDashboard() {
+  const router = useRouter();
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -58,14 +60,6 @@ export default function BartenderDashboard() {
                   <stat.icon size={20} color="#666" />
                   <Text style={styles.statChange}>{stat.change}</Text>
                 </View>
-                <Text style={styles.statValue}>{stat.value}</Text>
-                <Text style={styles.statTitle}>{stat.title}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-
-        {/* Main Actions */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Main Functions</Text>
           <View style={styles.actionGrid}>
@@ -101,6 +95,17 @@ export default function BartenderDashboard() {
             <Text style={styles.orderItems}>2x Beer, 1x Cocktail Mix</Text>
             <Text style={styles.orderTime}>Started 2 minutes ago</Text>
           </View>
+          
+          <TouchableOpacity 
+            style={styles.primaryActionCard}
+            onPress={() => router.push('/(dashboard)/bartender/pos')}
+          >
+            <Package size={32} color="#fff" />
+            <Text style={styles.primaryActionTitle}>POS System</Text>
+            <Text style={styles.primaryActionDescription}>
+              Process walk-in orders
+            </Text>
+          </TouchableOpacity>
           
           <View style={styles.orderCard}>
             <View style={styles.orderHeader}>

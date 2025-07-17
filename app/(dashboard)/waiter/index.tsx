@@ -24,6 +24,8 @@ const tableData = [
 ];
 
 export default function WaiterDashboard() {
+  const router = useRouter();
+
   const getTableStatusColor = (status: string) => {
     switch (status) {
       case 'occupied': return '#fbbf24';
@@ -95,7 +97,10 @@ export default function WaiterDashboard() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Main Functions</Text>
           <View style={styles.actionGrid}>
-            <TouchableOpacity style={styles.primaryActionCard}>
+            <TouchableOpacity 
+              style={styles.primaryActionCard}
+              onPress={() => router.push('/(dashboard)/waiter/pos')}
+            >
               <MapPin size={32} color="#fff" />
               <Text style={styles.primaryActionTitle}>Table Management</Text>
               <Text style={styles.primaryActionDescription}>

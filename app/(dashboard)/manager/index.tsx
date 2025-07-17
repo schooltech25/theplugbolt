@@ -94,7 +94,10 @@ export default function ManagerDashboard() {
               <Calendar size={20} color="#000" />
               <Text style={styles.actionText}>Schedule</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.actionCard}>
+            <TouchableOpacity 
+              style={styles.actionCard}
+              onPress={() => router.push('/(dashboard)/manager/inventory')}
+            >
               <Package size={20} color="#000" />
               <Text style={styles.actionText}>Inventory</Text>
             </TouchableOpacity>
