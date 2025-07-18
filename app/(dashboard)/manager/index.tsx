@@ -7,14 +7,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ChartBar as BarChart3, Users, Package, CreditCard, Bell, Calendar, TrendingUp, Shield, Settings } from 'lucide-react-native';
-
-const dashboardItems = [
-  { id: 'bartender', title: 'Bartender Dashboard', icon: Package, color: '#059669' },
-  { id: 'kitchen', title: 'Kitchen Dashboard', icon: CreditCard, color: '#dc2626' },
-  { id: 'waiter', title: 'Waiter Dashboard', icon: Users, color: '#7c3aed' },
-  { id: 'security', title: 'Security Dashboard', icon: Shield, color: '#ea580c' },
-];
+import { ChartBar as BarChart3, Users, Package, CreditCard, Calendar, TrendingUp, Shield } from 'lucide-react-native';
+import CollapsibleNavigation from '../../../components/navigation/CollapsibleNavigation';
+import NotificationPanel from '../../../components/notifications/NotificationPanel';
+import { useState } from 'react';
+import { Notification } from '../../../types';
 
 const quickStats = [
   { title: 'Today\'s Sales', value: '₱45,230', change: '+12%', icon: TrendingUp },
@@ -23,29 +20,56 @@ const quickStats = [
   { title: 'Low Stock Items', value: '4', change: '-2', icon: Package },
 ];
 
+const mockNotifications: Notification[] = [
+  {
+    id: '1',
+    type: 'staff',
+    title: 'Login Request',
+    message: 'Maria Santos (Waiter) requesting login approval',
+    priority: 'medium',
+    targetRoles: ['manager'],
+    isRead: false,
+    createdAt: new Date(Date.now() - 10 * 60 * 1000),
+    actionRequired: true,
+  },
+];
+
 export default function ManagerDashboard() {
   const router = useRouter();
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState(mockNotifications);
 
-  const navigateToDashboard = (dashboardId: string) => {
-    router.push(`/(dashboard)/${dashboardId}`);
+  const unreadCount = notifications.filter(n => !n.isRead).length;
+
+  const handleMarkAsRead = (notificationId: string) => {
+    setNotifications(prev =>
+      prev.map(n => n.id === notificationId ? { ...n, isRead: true } : n)
+    );
+  };
+
+  const handleNotificationPress = (notification: Notification) => {
+    if (notification.type === 'staff') {
+      router.push('/(dashboard)/manager/staff');
+    }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>Good Morning</Text>
-          <Text style={styles.title}>Manager Dashboard</Text>
-        </View>
-        <TouchableOpacity style={styles.notificationButton}>
-          <Bell size={24} color="#000" />
-          <View style={styles.notificationBadge}>
-            <Text style={styles.notificationText}>5</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      <CollapsibleNavigation
+        userRole="manager"
+        currentRoute="/(dashboard)/manager"
+        notificationCount={unreadCount}
+        onNotificationPress={() => setShowNotifications(true)}
+      />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Welcome Section */}
+        <View style={styles.welcomeSection}>
+          <Text style={styles.greeting}>Good Morning</Text>
+          <Text style={styles.title}>Manager Dashboard</Text>
+          <Text style={styles.subtitle}>Operations management and oversight</Text>
+        </View>
+
         {/* Quick Stats */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Quick Overview</Text>
@@ -60,71 +84,6 @@ export default function ManagerDashboard() {
                 <Text style={styles.statTitle}>{stat.title}</Text>
               </View>
             ))}
-          </View>
-        </View>
-
-        {/* Dashboard Navigation */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Access Dashboards</Text>
-          <View style={styles.dashboardGrid}>
-            {dashboardItems.map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                style={styles.dashboardCard}
-                onPress={() => navigateToDashboard(item.id)}
-              >
-                <View style={[styles.dashboardIcon, { backgroundColor: `${item.color}15` }]}>
-                  <item.icon size={24} color={item.color} />
-                </View>
-                <Text style={styles.dashboardTitle}>{item.title}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
-        {/* Management Actions */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Management Tools</Text>
-          <View style={styles.actionGrid}>
-            <TouchableOpacity style={styles.actionCard}>
-              <BarChart3 size={20} color="#000" />
-              <Text style={styles.actionText}>Reports</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.actionCard}
-              onPress={() => router.push('/(dashboard)/manager/reports')}
-            >
-              <BarChart3 size={20} color="#000" />
-              <Text style={styles.actionText}>Reports</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.actionCard}
-              onPress={() => router.push('/(dashboard)/manager/reservations')}
-            >
-              <Calendar size={20} color="#000" />
-              <Text style={styles.actionText}>Reservations</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.actionCard}
-              onPress={() => router.push('/(dashboard)/manager/inventory')}
-            >
-              <Package size={20} color="#000" />
-              <Text style={styles.actionText}>Inventory</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.actionCard}
-              onPress={() => router.push('/(dashboard)/manager/staff')}
-            >
-              <Users size={20} color="#000" />
-              <Text style={styles.actionText}>Staff</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.actionCard}
-              onPress={() => router.push('/(dashboard)/manager/vouchers')}
-            >
-              <Gift size={20} color="#000" />
-              <Text style={styles.actionText}>Vouchers</Text>
-            </TouchableOpacity>
           </View>
         </View>
 
@@ -148,6 +107,14 @@ export default function ManagerDashboard() {
           </View>
         </View>
       </ScrollView>
+
+      <NotificationPanel
+        visible={showNotifications}
+        notifications={notifications}
+        onClose={() => setShowNotifications(false)}
+        onMarkAsRead={handleMarkAsRead}
+        onNotificationPress={handleNotificationPress}
+      />
     </View>
   );
 }
@@ -157,14 +124,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  welcomeSection: {
     padding: 20,
-    paddingTop: 60,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 16,
+    margin: 20,
+    marginBottom: 0,
   },
   greeting: {
     fontSize: 14,
@@ -175,33 +140,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
     marginTop: 4,
+    marginBottom: 4,
   },
-  notificationButton: {
-    position: 'relative',
-    padding: 8,
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    backgroundColor: '#dc2626',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notificationText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
   },
   content: {
     flex: 1,
-    padding: 20,
   },
   section: {
-    marginBottom: 32,
+    marginBottom: 24,
+    marginHorizontal: 20,
   },
   sectionTitle: {
     fontSize: 18,
@@ -228,6 +178,69 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   statChange: {
+    fontSize: 12,
+    color: '#059669',
+    fontWeight: 'bold',
+  },
+  statValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 4,
+  },
+  statTitle: {
+    fontSize: 12,
+    color: '#666',
+  },
+  approvalCard: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+  },
+  approvalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  approvalTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+    marginLeft: 8,
+    flex: 1,
+  },
+  approvalBadge: {
+    backgroundColor: '#ea580c',
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  approvalBadgeText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  approvalDescription: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 12,
+  },
+  approvalButton: {
+    backgroundColor: '#000',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    alignSelf: 'flex-start',
+  },
+  approvalButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+});
+
     fontSize: 12,
     color: '#059669',
     fontWeight: '600',

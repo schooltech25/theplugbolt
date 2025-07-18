@@ -6,7 +6,9 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { ChefHat, Bell, TrendingUp, Clock, Package, TriangleAlert as AlertTriangle } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
+import { ChefHat, TrendingUp, Clock, Package, TriangleAlert as AlertTriangle } from 'lucide-react-native';
+import CollapsibleNavigation from '../../../components/navigation/CollapsibleNavigation';
 
 const quickStats = [
   { title: 'Orders Today', value: '34', change: '+6', icon: TrendingUp },
@@ -16,22 +18,24 @@ const quickStats = [
 ];
 
 export default function KitchenDashboard() {
+  const router = useRouter();
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>Good Morning</Text>
-          <Text style={styles.title}>Kitchen Dashboard</Text>
-        </View>
-        <TouchableOpacity style={styles.notificationButton}>
-          <Bell size={24} color="#000" />
-          <View style={styles.notificationBadge}>
-            <Text style={styles.notificationText}>4</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      <CollapsibleNavigation
+        userRole="kitchen"
+        currentRoute="/(dashboard)/kitchen"
+        notificationCount={4}
+      />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Welcome Section */}
+        <View style={styles.welcomeSection}>
+          <Text style={styles.greeting}>Good Morning</Text>
+          <Text style={styles.title}>Kitchen Dashboard</Text>
+          <Text style={styles.subtitle}>Food preparation and order management</Text>
+        </View>
+
         {/* Performance Stats */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Today's Performance</Text>
@@ -62,32 +66,6 @@ export default function KitchenDashboard() {
                 <Text style={styles.statTitle}>{stat.title}</Text>
               </View>
             ))}
-          </View>
-        </View>
-
-        {/* Main Actions */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Kitchen Functions</Text>
-          <View style={styles.actionGrid}>
-            <TouchableOpacity 
-              style={styles.primaryActionCard}
-              onPress={() => router.push('/(dashboard)/kitchen/orders')}
-            >
-              <ChefHat size={32} color="#fff" />
-              <Text style={styles.primaryActionTitle}>Order Management</Text>
-              <Text style={styles.primaryActionDescription}>
-                View and manage incoming orders
-              </Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.actionCard}>
-              <Package size={20} color="#000" />
-              <Text style={styles.actionText}>Inventory</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionCard}>
-              <Clock size={20} color="#000" />
-              <Text style={styles.actionText}>Production Log</Text>
-            </TouchableOpacity>
           </View>
         </View>
 
@@ -132,14 +110,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  welcomeSection: {
     padding: 20,
-    paddingTop: 60,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 16,
+    margin: 20,
+    marginBottom: 0,
   },
   greeting: {
     fontSize: 14,
@@ -150,33 +126,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
     marginTop: 4,
+    marginBottom: 4,
   },
-  notificationButton: {
-    position: 'relative',
-    padding: 8,
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    backgroundColor: '#dc2626',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notificationText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
   },
   content: {
     flex: 1,
-    padding: 20,
   },
   section: {
-    marginBottom: 32,
+    marginBottom: 24,
+    marginHorizontal: 20,
   },
   sectionTitle: {
     fontSize: 18,
@@ -202,6 +163,109 @@ const styles = StyleSheet.create({
   },
   ratingBadge: {
     backgroundColor: '#059669',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  ratingText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  performanceDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  statCard: {
+    flex: 1,
+    minWidth: '45%',
+    backgroundColor: '#f8f9fa',
+    padding: 16,
+    borderRadius: 12,
+  },
+  statHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  statChange: {
+    fontSize: 12,
+    color: '#059669',
+    fontWeight: 'bold',
+  },
+  statValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 4,
+  },
+  statTitle: {
+    fontSize: 12,
+    color: '#666',
+  },
+  orderCard: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+    marginBottom: 12,
+  },
+  orderHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  orderNumber: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+  },
+  orderStatus: {
+    backgroundColor: '#fbbf24',
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  orderStatusNew: {
+    backgroundColor: '#3b82f6',
+  },
+  orderStatusText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  orderItems: {
+    fontSize: 14,
+    color: '#333',
+    marginBottom: 4,
+  },
+  orderTime: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 12,
+  },
+  statusButton: {
+    backgroundColor: '#000',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    alignSelf: 'flex-start',
+  },
+  statusButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+});
+
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 4,

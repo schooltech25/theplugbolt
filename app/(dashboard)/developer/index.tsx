@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { Code, Bell, Server, Bug, RotateCcw, Database, Shield, Calendar } from 'lucide-react-native';
+import { Code, Server, Bug, RotateCcw, Database, Shield, Calendar } from 'lucide-react-native';
+import CollapsibleNavigation from '../../../components/navigation/CollapsibleNavigation';
 
 const systemStats = [
   { title: 'System Uptime', value: '99.8%', status: 'good', icon: Server },
@@ -114,20 +115,20 @@ export default function DeveloperDashboard() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>System Status</Text>
-          <Text style={styles.title}>Developer Dashboard</Text>
-        </View>
-        <TouchableOpacity style={styles.notificationButton}>
-          <Bell size={24} color="#000" />
-          <View style={styles.notificationBadge}>
-            <Text style={styles.notificationText}>0</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      <CollapsibleNavigation
+        userRole="developer"
+        currentRoute="/(dashboard)/developer"
+        notificationCount={0}
+      />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Welcome Section */}
+        <View style={styles.welcomeSection}>
+          <Text style={styles.greeting}>System Status</Text>
+          <Text style={styles.title}>Developer Dashboard</Text>
+          <Text style={styles.subtitle}>System monitoring and maintenance</Text>
+        </View>
+
         {/* System Health */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>System Health</Text>
@@ -235,14 +236,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  welcomeSection: {
     padding: 20,
-    paddingTop: 60,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 16,
+    margin: 20,
+    marginBottom: 0,
   },
   greeting: {
     fontSize: 14,
@@ -253,33 +252,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
     marginTop: 4,
+    marginBottom: 4,
   },
-  notificationButton: {
-    position: 'relative',
-    padding: 8,
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    backgroundColor: '#059669',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notificationText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
   },
   content: {
     flex: 1,
-    padding: 20,
   },
   section: {
-    marginBottom: 32,
+    marginBottom: 24,
+    marginHorizontal: 20,
   },
   sectionTitle: {
     fontSize: 18,
@@ -297,6 +281,150 @@ const styles = StyleSheet.create({
     minWidth: '45%',
     backgroundColor: '#f8f9fa',
     padding: 16,
+    borderRadius: 12,
+  },
+  statHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  statusIndicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  statValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 4,
+  },
+  statTitle: {
+    fontSize: 12,
+    color: '#666',
+  },
+  actionGrid: {
+    gap: 12,
+  },
+  actionCard: {
+    backgroundColor: '#f8f9fa',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  actionCardDisabled: {
+    opacity: 0.6,
+  },
+  actionText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#000',
+  },
+  dangerCard: {
+    backgroundColor: '#fef2f2',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#fecaca',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  dangerContent: {
+    flex: 1,
+  },
+  dangerTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#dc2626',
+    marginBottom: 4,
+  },
+  dangerDescription: {
+    fontSize: 14,
+    color: '#991b1b',
+  },
+  logCard: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+    marginBottom: 12,
+  },
+  logHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  logTime: {
+    fontSize: 12,
+    color: '#666',
+    fontFamily: 'monospace',
+  },
+  logLevel: {
+    backgroundColor: '#059669',
+    borderRadius: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  logLevelWarning: {
+    backgroundColor: '#fbbf24',
+  },
+  logLevelText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+  logMessage: {
+    fontSize: 14,
+    color: '#333',
+    fontFamily: 'monospace',
+  },
+  backupCard: {
+    backgroundColor: '#f8f9fa',
+    padding: 16,
+    borderRadius: 12,
+  },
+  backupHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  backupTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+    marginLeft: 8,
+  },
+  backupTime: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
+  },
+  backupStatus: {
+    fontSize: 14,
+    color: '#059669',
+    marginBottom: 12,
+  },
+  backupButton: {
+    backgroundColor: '#000',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    alignSelf: 'flex-start',
+  },
+  backupButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+});
+
     borderRadius: 12,
   },
   statHeader: {

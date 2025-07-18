@@ -7,16 +7,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ChartBar as BarChart3, Users, Package, CreditCard, Settings, Bell, Calendar, TrendingUp, Shield, Code } from 'lucide-react-native';
-
-const dashboardItems = [
-  { id: 'manager', title: 'Manager Dashboard', icon: Users, color: '#4f46e5' },
-  { id: 'bartender', title: 'Bartender Dashboard', icon: Package, color: '#059669' },
-  { id: 'kitchen', title: 'Kitchen Dashboard', icon: CreditCard, color: '#dc2626' },
-  { id: 'waiter', title: 'Waiter Dashboard', icon: Users, color: '#7c3aed' },
-  { id: 'security', title: 'Security Dashboard', icon: Shield, color: '#ea580c' },
-  { id: 'developer', title: 'Developer Dashboard', icon: Code, color: '#0891b2' },
-];
+import { ChartBar as BarChart3, Users, Package, CreditCard, Settings, Calendar, TrendingUp, Shield, Code } from 'lucide-react-native';
+import CollapsibleNavigation from '../../../components/navigation/CollapsibleNavigation';
+import NotificationPanel from '../../../components/notifications/NotificationPanel';
+import { useState } from 'react';
+import { Notification } from '../../../types';
 
 const quickStats = [
   { title: 'Today\'s Sales', value: '₱45,230', change: '+12%', icon: TrendingUp },
@@ -25,90 +20,99 @@ const quickStats = [
   { title: 'Low Stock Items', value: '4', change: '-2', icon: Package },
 ];
 
+const mockNotifications: Notification[] = [
+  {
+    id: '1',
+    type: 'order',
+    title: 'Order Ready',
+    message: 'Order #1245 is ready for pickup at Table 3',
+    priority: 'high',
+    targetRoles: ['owner'],
+    isRead: false,
+    createdAt: new Date(Date.now() - 5 * 60 * 1000),
+    actionRequired: true,
+  },
+  {
+    id: '2',
+    type: 'inventory',
+    title: 'Low Stock Alert',
+    message: 'Beer bottles running low (6 cases remaining)',
+    priority: 'medium',
+    targetRoles: ['owner'],
+    isRead: false,
+    createdAt: new Date(Date.now() - 15 * 60 * 1000),
+    actionRequired: false,
+  },
+];
+
 export default function OwnerDashboard() {
   const router = useRouter();
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState(mockNotifications);
 
-  const navigateToDashboard = (dashboardId: string) => {
-    router.push(`/(dashboard)/${dashboardId}`);
+  const unreadCount = notifications.filter(n => !n.isRead).length;
+
+  const handleMarkAsRead = (notificationId: string) => {
+    setNotifications(prev =>
+      prev.map(n => n.id === notificationId ? { ...n, isRead: true } : n)
+    );
+  };
+
+  const handleNotificationPress = (notification: Notification) => {
+    // Handle notification action based on type
+    if (notification.orderId) {
+      router.push('/(dashboard)/kitchen/orders');
+    }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>Good Morning</Text>
-          <Text style={styles.title}>Owner Dashboard</Text>
-        </View>
-        <TouchableOpacity style={styles.notificationButton}>
-          <Bell size={24} color="#000" />
-          <View style={styles.notificationBadge}>
-            <Text style={styles.notificationText}>3</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      <CollapsibleNavigation
+        userRole="owner"
+        currentRoute="/(dashboard)/owner"
+        notificationCount={unreadCount}
+        onNotificationPress={() => setShowNotifications(true)}
+      />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Quick Stats */}
+        {/* Welcome Section */}
+        <View style={styles.welcomeSection}>
+          <Text style={styles.greeting}>Good Morning</Text>
+          <Text style={styles.title}>Owner Dashboard</Text>
+        {/* Recent Activity */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Overview</Text>
-          <View style={styles.statsGrid}>
-            {quickStats.map((stat, index) => (
-              <View key={index} style={styles.statCard}>
-                <View style={styles.statHeader}>
-                  <stat.icon size={20} color="#666" />
-                  <Text style={styles.statChange}>{stat.change}</Text>
-                </View>
-                <Text style={styles.statValue}>{stat.value}</Text>
-                <Text style={styles.statTitle}>{stat.title}</Text>
-              </View>
-            ))}
+          <Text style={styles.sectionTitle}>Recent Activity</Text>
+          <View style={styles.activityCard}>
+            <View style={styles.activityHeader}>
+              <TrendingUp size={16} color="#059669" />
+              <Text style={styles.activityTitle}>Sales Update</Text>
+              <Text style={styles.activityTime}>5m ago</Text>
+            </View>
+            <Text style={styles.activityDescription}>
+              Daily sales target achieved - ₱45,230 (112% of target)
+            </Text>
           </View>
-        </View>
-
-        {/* Dashboard Navigation */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Access Dashboards</Text>
-          <View style={styles.dashboardGrid}>
-            {dashboardItems.map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                style={styles.dashboardCard}
-                onPress={() => navigateToDashboard(item.id)}
-              >
-                <View style={[styles.dashboardIcon, { backgroundColor: `${item.color}15` }]}>
-                  <item.icon size={24} color={item.color} />
-                </View>
-                <Text style={styles.dashboardTitle}>{item.title}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
-        {/* Quick Actions */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <View style={styles.actionGrid}>
-            <TouchableOpacity 
-              style={styles.actionCard}
-              onPress={() => router.push('/(dashboard)/manager/reports')}
-            >
-              <BarChart3 size={20} color="#000" />
-              <Text style={styles.actionText}>View Reports</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.actionCard}
-              onPress={() => router.push('/(dashboard)/manager/reservations')}
-            >
-              <Calendar size={20} color="#000" />
-              <Text style={styles.actionText}>Reservations</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionCard}>
-              <Settings size={20} color="#000" />
-              <Text style={styles.actionText}>Settings</Text>
-            </TouchableOpacity>
+          
+          <View style={styles.activityCard}>
+            <View style={styles.activityHeader}>
+              <Users size={16} color="#3b82f6" />
+              <Text style={styles.activityTitle}>Staff Performance</Text>
+              <Text style={styles.activityTime}>15m ago</Text>
+            </View>
+            <Text style={styles.activityDescription}>
+              All staff members performing above average today
+            </Text>
           </View>
         </View>
       </ScrollView>
+
+      <NotificationPanel
+        visible={showNotifications}
+        notifications={notifications}
+        onClose={() => setShowNotifications(false)}
+        onMarkAsRead={handleMarkAsRead}
+        onNotificationPress={handleNotificationPress}
+      />
     </View>
   );
 }
@@ -118,14 +122,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  welcomeSection: {
     padding: 20,
-    paddingTop: 60,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 16,
+    margin: 20,
+    marginBottom: 0,
   },
   greeting: {
     fontSize: 14,
@@ -136,33 +138,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
     marginTop: 4,
+    marginBottom: 4,
   },
-  notificationButton: {
-    position: 'relative',
-    padding: 8,
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    backgroundColor: '#dc2626',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notificationText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
   },
   content: {
     flex: 1,
-    padding: 20,
   },
   section: {
-    marginBottom: 32,
+    marginBottom: 24,
+    marginHorizontal: 20,
   },
   sectionTitle: {
     fontSize: 18,
@@ -182,6 +169,57 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
   },
+  statHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  statChange: {
+    fontSize: 12,
+    color: '#059669',
+    fontWeight: 'bold',
+  },
+  statValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 4,
+  },
+  statTitle: {
+    fontSize: 12,
+    color: '#666',
+  },
+  activityCard: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+    marginBottom: 12,
+  },
+  activityHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  activityTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#000',
+    marginLeft: 8,
+    flex: 1,
+  },
+  activityTime: {
+    fontSize: 12,
+    color: '#666',
+  },
+  activityDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+});
+
   statHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',

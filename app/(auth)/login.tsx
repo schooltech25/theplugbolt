@@ -85,9 +85,7 @@ export default function LoginScreen() {
           <View style={styles.loginContainer}>
             <View style={styles.loginCard}>
               <Text style={styles.title}>BarMaster</Text>
-              <Text style={styles.subtitle}>Bar & Restaurant Management</Text>
-              
-              <View style={styles.inputContainer}>
+              <Text style={styles.title}>BarMaster</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Username/Email"
@@ -163,7 +161,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logoBackground: {
-    opacity: 0.15,
+    opacity: 0.1,
     resizeMode: 'contain',
   },
   scrollContainer: {
@@ -190,10 +188,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: 8,
   },
   title: {
     fontSize: 32,

@@ -6,7 +6,9 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { Shield, Bell, TrendingUp, Clock, QrCode, TriangleAlert as AlertTriangle } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
+import { Shield, TrendingUp, Clock, QrCode, TriangleAlert as AlertTriangle } from 'lucide-react-native';
+import CollapsibleNavigation from '../../../components/navigation/CollapsibleNavigation';
 
 const quickStats = [
   { title: 'Tickets Scanned', value: '89', change: '+12', icon: TrendingUp },
@@ -16,22 +18,24 @@ const quickStats = [
 ];
 
 export default function SecurityDashboard() {
+  const router = useRouter();
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>Good Morning</Text>
-          <Text style={styles.title}>Security Dashboard</Text>
-        </View>
-        <TouchableOpacity style={styles.notificationButton}>
-          <Bell size={24} color="#000" />
-          <View style={styles.notificationBadge}>
-            <Text style={styles.notificationText}>1</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      <CollapsibleNavigation
+        userRole="security"
+        currentRoute="/(dashboard)/security"
+        notificationCount={1}
+      />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Welcome Section */}
+        <View style={styles.welcomeSection}>
+          <Text style={styles.greeting}>Good Morning</Text>
+          <Text style={styles.title}>Security Dashboard</Text>
+          <Text style={styles.subtitle}>Security monitoring and access control</Text>
+        </View>
+
         {/* Performance Stats */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Today's Performance</Text>
@@ -62,32 +66,6 @@ export default function SecurityDashboard() {
                 <Text style={styles.statTitle}>{stat.title}</Text>
               </View>
             ))}
-          </View>
-        </View>
-
-        {/* Main Actions */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Security Functions</Text>
-          <View style={styles.actionGrid}>
-            <TouchableOpacity 
-              style={styles.primaryActionCard}
-              onPress={() => router.push('/(dashboard)/security/scanner')}
-            >
-              <QrCode size={32} color="#fff" />
-              <Text style={styles.primaryActionTitle}>QR Scanner</Text>
-              <Text style={styles.primaryActionDescription}>
-                Scan tickets and vouchers
-              </Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.actionCard}>
-              <AlertTriangle size={20} color="#000" />
-              <Text style={styles.actionText}>Log Incident</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionCard}>
-              <Shield size={20} color="#000" />
-              <Text style={styles.actionText}>Security Log</Text>
-            </TouchableOpacity>
           </View>
         </View>
 
@@ -157,14 +135,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  welcomeSection: {
     padding: 20,
-    paddingTop: 60,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 16,
+    margin: 20,
+    marginBottom: 0,
   },
   greeting: {
     fontSize: 14,
@@ -175,33 +151,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
     marginTop: 4,
+    marginBottom: 4,
   },
-  notificationButton: {
-    position: 'relative',
-    padding: 8,
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    backgroundColor: '#dc2626',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notificationText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
   },
   content: {
     flex: 1,
-    padding: 20,
   },
   section: {
-    marginBottom: 32,
+    marginBottom: 24,
+    marginHorizontal: 20,
   },
   sectionTitle: {
     fontSize: 18,
@@ -252,6 +213,104 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
   },
+  statHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  statChange: {
+    fontSize: 12,
+    color: '#059669',
+    fontWeight: 'bold',
+  },
+  statValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 4,
+  },
+  statTitle: {
+    fontSize: 12,
+    color: '#666',
+  },
+  activityCard: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+    marginBottom: 12,
+  },
+  activityHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  activityTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#000',
+    marginLeft: 8,
+    flex: 1,
+  },
+  activityTime: {
+    fontSize: 12,
+    color: '#666',
+  },
+  activityDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+  requestCard: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+  },
+  requestHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  requestTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+    marginLeft: 8,
+    flex: 1,
+  },
+  urgentBadge: {
+    backgroundColor: '#dc2626',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  urgentText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+  requestDescription: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 12,
+  },
+  respondButton: {
+    backgroundColor: '#000',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    alignSelf: 'flex-start',
+  },
+  respondButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+});
+
   statHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',

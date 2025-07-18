@@ -6,7 +6,9 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { Users, Bell, TrendingUp, Clock, CreditCard, MapPin } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
+import { Users, TrendingUp, Clock, CreditCard, MapPin } from 'lucide-react-native';
+import CollapsibleNavigation from '../../../components/navigation/CollapsibleNavigation';
 
 const quickStats = [
   { title: 'Tables Served', value: '12', change: '+3', icon: TrendingUp },
@@ -46,20 +48,20 @@ export default function WaiterDashboard() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>Good Morning</Text>
-          <Text style={styles.title}>Waiter Dashboard</Text>
-        </View>
-        <TouchableOpacity style={styles.notificationButton}>
-          <Bell size={24} color="#000" />
-          <View style={styles.notificationBadge}>
-            <Text style={styles.notificationText}>3</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      <CollapsibleNavigation
+        userRole="waiter"
+        currentRoute="/(dashboard)/waiter"
+        notificationCount={3}
+      />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Welcome Section */}
+        <View style={styles.welcomeSection}>
+          <Text style={styles.greeting}>Good Morning</Text>
+          <Text style={styles.title}>Waiter Dashboard</Text>
+          <Text style={styles.subtitle}>Table service and customer management</Text>
+        </View>
+
         {/* Performance Stats */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Today's Performance</Text>
@@ -90,32 +92,6 @@ export default function WaiterDashboard() {
                 <Text style={styles.statTitle}>{stat.title}</Text>
               </View>
             ))}
-          </View>
-        </View>
-
-        {/* Main Actions */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Main Functions</Text>
-          <View style={styles.actionGrid}>
-            <TouchableOpacity 
-              style={styles.primaryActionCard}
-              onPress={() => router.push('/(dashboard)/waiter/pos')}
-            >
-              <MapPin size={32} color="#fff" />
-              <Text style={styles.primaryActionTitle}>Table Management</Text>
-              <Text style={styles.primaryActionDescription}>
-                Manage table orders and service
-              </Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.actionCard}>
-              <CreditCard size={20} color="#000" />
-              <Text style={styles.actionText}>Process Payment</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionCard}>
-              <Clock size={20} color="#000" />
-              <Text style={styles.actionText}>Service Log</Text>
-            </TouchableOpacity>
           </View>
         </View>
 
@@ -170,14 +146,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  welcomeSection: {
     padding: 20,
-    paddingTop: 60,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 16,
+    margin: 20,
+    marginBottom: 0,
   },
   greeting: {
     fontSize: 14,
@@ -188,33 +162,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
     marginTop: 4,
+    marginBottom: 4,
   },
-  notificationButton: {
-    position: 'relative',
-    padding: 8,
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    backgroundColor: '#dc2626',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notificationText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
   },
   content: {
     flex: 1,
-    padding: 20,
   },
   section: {
-    marginBottom: 32,
+    marginBottom: 24,
+    marginHorizontal: 20,
   },
   sectionTitle: {
     fontSize: 18,
@@ -240,6 +199,159 @@ const styles = StyleSheet.create({
   },
   ratingBadge: {
     backgroundColor: '#059669',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  ratingText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  performanceDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  statCard: {
+    flex: 1,
+    minWidth: '45%',
+    backgroundColor: '#f8f9fa',
+    padding: 16,
+    borderRadius: 12,
+  },
+  statHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  statChange: {
+    fontSize: 12,
+    color: '#059669',
+    fontWeight: 'bold',
+  },
+  statValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 4,
+  },
+  statTitle: {
+    fontSize: 12,
+    color: '#666',
+  },
+  tableGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  tableCard: {
+    flex: 1,
+    minWidth: '45%',
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  tableNumber: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  tableStatus: {
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  tableStatusText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+  tableInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  tableGuests: {
+    fontSize: 14,
+    color: '#666',
+  },
+  tableValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#000',
+  },
+  tableTime: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 8,
+  },
+  serveButton: {
+    backgroundColor: '#059669',
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    alignSelf: 'flex-start',
+  },
+  serveButtonText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  pickupCard: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+  },
+  pickupHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  pickupOrder: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+    flex: 1,
+  },
+  claimButton: {
+    backgroundColor: '#000',
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+  },
+  claimButtonText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  pickupItems: {
+    fontSize: 14,
+    color: '#333',
+    marginBottom: 4,
+  },
+  pickupTime: {
+    fontSize: 12,
+    color: '#666',
+  },
+});
+
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 4,
