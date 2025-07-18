@@ -7,7 +7,7 @@ import {
   ScrollView,
   Modal,
 } from 'react-native';
-import { X, Bell, AlertTriangle, Package, Users, Calendar } from 'lucide-react-native';
+import { X, Bell, TriangleAlert as AlertTriangle, Package, Users, Calendar } from 'lucide-react-native';
 import { Notification } from '../../types';
 
 interface NotificationPanelProps {
