@@ -10,10 +10,10 @@ import {
 
 // --- Firebase Configuration and Context ---
 
-// Global variables provided by the Canvas environment
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+// Access environment variables using import.meta.env (Vite standard)
+const appId = import.meta.env.VITE_APP_ID || 'default-app-id';
+const firebaseConfig = import.meta.env.VITE_FIREBASE_CONFIG ? JSON.parse(import.meta.env.VITE_FIREBASE_CONFIG) : {};
+const initialAuthToken = import.meta.env.VITE_INITIAL_AUTH_TOKEN || null;
 
 // Create a context for Firebase services and user information
 const AuthContext = createContext(null);
@@ -31,6 +31,11 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         const initFirebase = async () => {
             try {
+                // Ensure firebaseConfig is not empty before initializing
+                if (Object.keys(firebaseConfig).length === 0) {
+                    throw new Error("Firebase configuration is missing. Please set VITE_FIREBASE_CONFIG environment variable.");
+                }
+
                 const firebaseApp = initializeApp(firebaseConfig);
                 setApp(firebaseApp);
                 const firestoreDb = getFirestore(firebaseApp);
@@ -69,13 +74,13 @@ const AuthProvider = ({ children }) => {
                 return () => unsubscribe();
             } catch (err) {
                 console.error("Failed to initialize Firebase or authenticate:", err);
-                setError("Failed to initialize the application. Please try again.");
+                setError(`Failed to initialize the application: ${err.message}. Please check environment variables.`);
                 setLoading(false);
             }
         };
 
         initFirebase();
-    }, []);
+    }, [appId, JSON.stringify(firebaseConfig), initialAuthToken]); // Re-run if these change
 
     const handleLogout = async () => {
         if (auth) {
@@ -292,7 +297,7 @@ const BartenderDashboard = ({ setCurrentPage }) => {
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Main Functions</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <button
-                        onClick={() => setCurrentPage('pos')}
+                        onClick={() => alert('Navigating to POS')} // Replace alert with CustomModal
                         className="bg-black text-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center hover:bg-gray-800 transition-colors"
                     >
                         <Package size={32} className="mb-2" />
@@ -356,7 +361,7 @@ const KitchenDashboard = ({ setCurrentPage }) => {
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Main Functions</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <button
-                        onClick={() => alert('Navigating to KDS')}
+                        onClick={() => alert('Navigating to KDS')} // Replace alert with CustomModal
                         className="bg-black text-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center hover:bg-gray-800 transition-colors"
                     >
                         <Utensils size={32} className="mb-2" />
@@ -407,7 +412,7 @@ const WaiterDashboard = ({ setCurrentPage }) => {
                         <span className="text-sm text-gray-300 text-center">Process table orders</span>
                     </button>
                     <button
-                        onClick={() => alert('Navigating to Reservations')}
+                        onClick={() => alert('Navigating to Reservations')} // Replace alert with CustomModal
                         className="bg-gray-200 text-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center justify-center hover:bg-gray-300 transition-colors"
                     >
                         <CalendarDays size={32} className="mb-2" />
@@ -442,7 +447,7 @@ const SecurityDashboard = ({ setCurrentPage }) => {
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Main Functions</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <button
-                        onClick={() => alert('Activating QR Scanner')}
+                        onClick={() => alert('Activating QR Scanner')} // Replace alert with CustomModal
                         className="bg-black text-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center hover:bg-gray-800 transition-colors"
                     >
                         <Scan size={32} className="mb-2" />
@@ -450,7 +455,7 @@ const SecurityDashboard = ({ setCurrentPage }) => {
                         <span className="text-sm text-gray-300 text-center">Validate tickets/entry</span>
                     </button>
                     <button
-                        onClick={() => alert('Navigating to Incident Log')}
+                        onClick={() => alert('Navigating to Incident Log')} // Replace alert with CustomModal
                         className="bg-gray-200 text-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center justify-center hover:bg-gray-300 transition-colors"
                     >
                         <BookOpen size={32} className="mb-2" />
@@ -485,7 +490,7 @@ const DeveloperDashboard = ({ setCurrentPage }) => {
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Maintenance & Recovery</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <button
-                        onClick={() => alert('Viewing Error Logs')}
+                        onClick={() => alert('Viewing Error Logs')} // Replace alert with CustomModal
                         className="bg-gray-200 text-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center justify-center hover:bg-gray-300 transition-colors"
                     >
                         <Code size={32} className="mb-2" />
@@ -493,7 +498,7 @@ const DeveloperDashboard = ({ setCurrentPage }) => {
                         <span className="text-sm text-gray-600 text-center">Review system errors</span>
                     </button>
                     <button
-                        onClick={() => alert('Triggering Fix Bug/Error process')}
+                        onClick={() => alert('Triggering Fix Bug/Error process')} // Replace alert with CustomModal
                         className="bg-black text-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center hover:bg-gray-800 transition-colors"
                     >
                         <Settings size={32} className="mb-2" />
@@ -501,7 +506,7 @@ const DeveloperDashboard = ({ setCurrentPage }) => {
                         <span className="text-sm text-gray-300 text-center">Resolve reported issues</span>
                     </button>
                     <button
-                        onClick={() => alert('Initiating Rollback to Date')}
+                        onClick={() => alert('Initiating Rollback to Date')} // Replace alert with CustomModal
                         className="bg-gray-200 text-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center justify-center hover:bg-gray-300 transition-colors"
                     >
                         <CalendarDays size={32} className="mb-2" />
@@ -509,7 +514,7 @@ const DeveloperDashboard = ({ setCurrentPage }) => {
                         <span className="text-sm text-gray-600 text-center">Revert data to a specific day</span>
                     </button>
                     <button
-                        onClick={() => alert('Initiating Rollback to Functioning Version')}
+                        onClick={() => alert('Initiating Rollback to Functioning Version')} // Replace alert with CustomModal
                         className="bg-gray-200 text-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center justify-center hover:bg-gray-300 transition-colors"
                     >
                         <Factory size={32} className="mb-2" />
@@ -517,7 +522,7 @@ const DeveloperDashboard = ({ setCurrentPage }) => {
                         <span className="text-sm text-gray-600 text-center">Revert to last stable app version</span>
                     </button>
                     <button
-                        onClick={() => alert('Initiating Factory Reset (Requires Confirmation)')}
+                        onClick={() => alert('Initiating Factory Reset (Requires Confirmation)')} // Replace alert with CustomModal
                         className="bg-red-600 text-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center hover:bg-red-700 transition-colors"
                     >
                         <AlertTriangle size={32} className="mb-2" />
@@ -1029,12 +1034,3 @@ const AppContent = () => {
                         </div>
                     </header>
                 )}
-
-                {/* Main Content */}
-                <main className="flex-1 overflow-y-auto">
-                    {renderPage()}
-                </main>
-            </div>
-        </div>
-    );
-};
