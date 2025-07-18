@@ -7,7 +7,7 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import { QrCode, CheckCircle, XCircle, Clock } from 'lucide-react-native';
+import { QrCode, CircleCheck as CheckCircle, Circle as XCircle, Clock } from 'lucide-react-native';
 
 interface ScanResult {
   id: string;

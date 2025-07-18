@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ArrowLeft, BarChart3 } from 'lucide-react-native';
+import { ArrowLeft, ChartBar as BarChart3 } from 'lucide-react-native';
 import SalesReport from '../../../components/reports/SalesReport';
 
 export default function ManagerReports() {
