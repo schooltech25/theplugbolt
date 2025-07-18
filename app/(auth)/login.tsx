@@ -81,9 +81,6 @@ export default function LoginScreen() {
       >
         <ScrollView 
           contentContainerStyle={styles.scrollContainer}
-            <View style={styles.logoContainer}>
-              <Text style={styles.title}>BarMaster</Text>
-            </View>
         >
           <View style={styles.loginContainer}>
             <View style={styles.loginCard}>

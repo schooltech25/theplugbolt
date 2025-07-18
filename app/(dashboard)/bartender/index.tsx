@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Package, Bell, TrendingUp, Clock, Users, TriangleAlert as AlertTriangle } from 'lucide-react-native';
 
 const quickStats = [
@@ -60,10 +61,21 @@ export default function BartenderDashboard() {
                   <stat.icon size={20} color="#666" />
                   <Text style={styles.statChange}>{stat.change}</Text>
                 </View>
+                <Text style={styles.statValue}>{stat.value}</Text>
+                <Text style={styles.statTitle}>{stat.title}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Main Functions */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Main Functions</Text>
           <View style={styles.actionGrid}>
-            <TouchableOpacity style={styles.primaryActionCard}>
+            <TouchableOpacity 
+              style={styles.primaryActionCard}
+              onPress={() => router.push('/(dashboard)/bartender/pos')}
+            >
               <Package size={32} color="#fff" />
               <Text style={styles.primaryActionTitle}>POS System</Text>
               <Text style={styles.primaryActionDescription}>
@@ -96,17 +108,6 @@ export default function BartenderDashboard() {
             <Text style={styles.orderTime}>Started 2 minutes ago</Text>
           </View>
           
-          <TouchableOpacity 
-            style={styles.primaryActionCard}
-            onPress={() => router.push('/(dashboard)/bartender/pos')}
-          >
-            <Package size={32} color="#fff" />
-            <Text style={styles.primaryActionTitle}>POS System</Text>
-            <Text style={styles.primaryActionDescription}>
-              Process walk-in orders
-            </Text>
-          </TouchableOpacity>
-          
           <View style={styles.orderCard}>
             <View style={styles.orderHeader}>
               <Text style={styles.orderNumber}>Order #1248</Text>
@@ -119,9 +120,6 @@ export default function BartenderDashboard() {
           </View>
         </View>
       </ScrollView>
-    )
-    )
-    }
     </View>
   );
 }
