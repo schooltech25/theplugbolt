@@ -1,0 +1,67 @@
+name: Build and Deploy BarMaster Web App
+
+on:
+  push:
+    branches:
+      - main # Trigger the workflow on pushes to the main branch
+  pull_request:
+    branches:
+      - main # Also trigger on pull requests to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+
+    steps:
+      - name: Checkout code # Step 1: Clone the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js # Step 2: Set up Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use Node.js version 20 (or your preferred stable version)
+          cache: 'npm' # Cache npm dependencies for faster builds
+
+      - name: Install dependencies # Step 3: Install project dependencies
+        run: npm install
+
+      # If you have a separate build step for Tailwind CSS (e.g., if you're not using PostCSS with your main build)
+      # you might add a step like this. However, typically 'npm run build' handles it with PostCSS config.
+      # - name: Build Tailwind CSS (if separate)
+      #   run: npx tailwindcss -i ./src/index.css -o ./dist/output.css --minify
+
+      - name: Build React application # Step 4: Build the React application for production
+        run: npm run build
+
+      # Optional: Add a test step if you have tests configured
+      # - name: Run tests
+      #   run: npm test # Or 'npm run test' if you have a custom script
+
+      - name: Archive production artifacts # Step 5: Archive the build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: barmaster-build
+          path: build/ # Or 'dist/' if your build output goes to a 'dist' folder (check your package.json build script)
+
+  # Optional: Add a deploy job if you want to automate deployment to Netlify or other services
+  # deploy:
+  #   needs: build # This job depends on the 'build' job completing successfully
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download build artifacts
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: barmaster-build
+  #         path: ./build # Or './dist'
+
+  #     - name: Deploy to Netlify (Example)
+  #       uses: nwtgck/actions-netlify@v2.0
+  #       with:
+  #         publish-dir: './build' # Or './dist'
+  #         production-branch: main
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
+  #         netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }} # Set this in Netlify
+  #         netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }} # Set this in Netlify
+  #       env:
+  #         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+  #         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
