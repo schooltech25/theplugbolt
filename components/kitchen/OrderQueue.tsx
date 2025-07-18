@@ -6,7 +6,7 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import { Clock, CheckCircle, AlertCircle } from 'lucide-react-native';
+import { Clock, CircleCheck as CheckCircle, CircleAlert as AlertCircle } from 'lucide-react-native';
 import { Order } from '../../types';
 
 interface OrderQueueProps {
