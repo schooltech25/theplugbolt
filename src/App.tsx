@@ -1034,3 +1034,12 @@ const AppContent = () => {
                         </div>
                     </header>
                 )}
+
+                {/* Main Content */}
+                <main className="flex-1 overflow-y-auto">
+                    {renderPage()}
+                </main>
+            </div>
+        </div>
+    );
+};
