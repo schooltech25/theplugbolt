@@ -3,33 +3,37 @@ name: Build and Deploy BarMaster Web App
 on:
   push:
     branches:
-      - main
+      - main # Trigger the workflow on pushes to the main branch
   pull_request:
     branches:
-      - main
+      - main # Also trigger on pull requests to the main branch
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner
 
     steps:
-      - name: Checkout code
+      - name: Checkout code # Step 1: Clone the repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up Node.js # Step 2: Set up Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: '20' # Use Node.js version 20 (or your preferred stable version)
+          cache: 'npm' # Cache npm dependencies for faster builds
 
-      - name: Install dependencies
+      - name: Install dependencies # Step 3: Install project dependencies
         run: npm install
 
-      - name: Build React application
+      - name: Build React application # Step 4: Build the React application for production
         run: npm run build
 
-      - name: Archive production artifacts
+      # Optional: Add a test step if you have tests configured
+      # - name: Run tests
+      #   run: npm test # Or 'npm run test' if you have a custom script
+
+      - name: Archive production artifacts # Step 5: Archive the build output
         uses: actions/upload-artifact@v4
         with:
           name: barmaster-build
-          path: build/
+          path: dist/ # CHANGED: From 'build/' to 'dist/' to match Vite's default output
