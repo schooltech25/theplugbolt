@@ -12,7 +12,13 @@ export default function DashboardLayout() {
       <Stack.Screen name="waiter/index" />
       <Stack.Screen name="waiter/pos" />
       <Stack.Screen name="security/index" />
+      <Stack.Screen name="security/scanner" />
       <Stack.Screen name="developer/index" />
+      <Stack.Screen name="kitchen/orders" />
+      <Stack.Screen name="manager/reports" />
+      <Stack.Screen name="manager/vouchers" />
+      <Stack.Screen name="manager/reservations" />
+      <Stack.Screen name="manager/staff" />
     </Stack>
   );
 }

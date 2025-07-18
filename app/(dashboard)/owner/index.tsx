@@ -88,11 +88,17 @@ export default function OwnerDashboard() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Quick Actions</Text>
           <View style={styles.actionGrid}>
-            <TouchableOpacity style={styles.actionCard}>
+            <TouchableOpacity 
+              style={styles.actionCard}
+              onPress={() => router.push('/(dashboard)/manager/reports')}
+            >
               <BarChart3 size={20} color="#000" />
               <Text style={styles.actionText}>View Reports</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.actionCard}>
+            <TouchableOpacity 
+              style={styles.actionCard}
+              onPress={() => router.push('/(dashboard)/manager/reservations')}
+            >
               <Calendar size={20} color="#000" />
               <Text style={styles.actionText}>Reservations</Text>
             </TouchableOpacity>

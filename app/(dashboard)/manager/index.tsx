@@ -90,9 +90,19 @@ export default function ManagerDashboard() {
               <BarChart3 size={20} color="#000" />
               <Text style={styles.actionText}>Reports</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.actionCard}>
+            <TouchableOpacity 
+              style={styles.actionCard}
+              onPress={() => router.push('/(dashboard)/manager/reports')}
+            >
+              <BarChart3 size={20} color="#000" />
+              <Text style={styles.actionText}>Reports</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.actionCard}
+              onPress={() => router.push('/(dashboard)/manager/reservations')}
+            >
               <Calendar size={20} color="#000" />
-              <Text style={styles.actionText}>Schedule</Text>
+              <Text style={styles.actionText}>Reservations</Text>
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.actionCard}
@@ -101,9 +111,19 @@ export default function ManagerDashboard() {
               <Package size={20} color="#000" />
               <Text style={styles.actionText}>Inventory</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.actionCard}>
-              <Settings size={20} color="#000" />
-              <Text style={styles.actionText}>Settings</Text>
+            <TouchableOpacity 
+              style={styles.actionCard}
+              onPress={() => router.push('/(dashboard)/manager/staff')}
+            >
+              <Users size={20} color="#000" />
+              <Text style={styles.actionText}>Staff</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.actionCard}
+              onPress={() => router.push('/(dashboard)/manager/vouchers')}
+            >
+              <Gift size={20} color="#000" />
+              <Text style={styles.actionText}>Vouchers</Text>
             </TouchableOpacity>
           </View>
         </View>

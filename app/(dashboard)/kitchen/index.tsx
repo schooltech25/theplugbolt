@@ -69,7 +69,10 @@ export default function KitchenDashboard() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Kitchen Functions</Text>
           <View style={styles.actionGrid}>
-            <TouchableOpacity style={styles.primaryActionCard}>
+            <TouchableOpacity 
+              style={styles.primaryActionCard}
+              onPress={() => router.push('/(dashboard)/kitchen/orders')}
+            >
               <ChefHat size={32} color="#fff" />
               <Text style={styles.primaryActionTitle}>Order Management</Text>
               <Text style={styles.primaryActionDescription}>

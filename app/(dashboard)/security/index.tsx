@@ -69,7 +69,10 @@ export default function SecurityDashboard() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Security Functions</Text>
           <View style={styles.actionGrid}>
-            <TouchableOpacity style={styles.primaryActionCard}>
+            <TouchableOpacity 
+              style={styles.primaryActionCard}
+              onPress={() => router.push('/(dashboard)/security/scanner')}
+            >
               <QrCode size={32} color="#fff" />
               <Text style={styles.primaryActionTitle}>QR Scanner</Text>
               <Text style={styles.primaryActionDescription}>

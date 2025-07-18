@@ -81,7 +81,9 @@ export default function LoginScreen() {
       >
         <ScrollView 
           contentContainerStyle={styles.scrollContainer}
-          keyboardShouldPersistTaps="handled"
+            <View style={styles.logoContainer}>
+              <Text style={styles.title}>BarMaster</Text>
+            </View>
         >
           <View style={styles.loginContainer}>
             <View style={styles.loginCard}>
@@ -164,7 +166,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logoBackground: {
-    opacity: 0.1,
+    opacity: 0.15,
     resizeMode: 'contain',
   },
   scrollContainer: {
@@ -192,12 +194,15 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 8,
   },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 8,
+  },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
     color: '#000',
     textAlign: 'center',
-    marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
