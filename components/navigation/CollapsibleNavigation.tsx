@@ -10,29 +10,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { 
-  Menu, 
-  X, 
-  LogOut, 
-  Home,
-  Package,
-  CreditCard,
-  Users,
-  Shield,
-  Code,
-  ChefHat,
-  MapPin,
-  BarChart3,
-  Calendar,
-  Gift,
-  QrCode,
-  Settings,
-  Bell,
-  Clock,
-  TrendingUp,
-  AlertTriangle,
-  FileText
-} from 'lucide-react-native';
+import { Menu, X, LogOut, Chrome as Home, Package, CreditCard, Users, Shield, Code, ChefHat, MapPin, ChartBar as BarChart3, Calendar, Gift, QrCode, Settings, Bell, Clock, TrendingUp, TriangleAlert as AlertTriangle, FileText } from 'lucide-react-native';
 
 interface NavigationItem {
   id: string;
